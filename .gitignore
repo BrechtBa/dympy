@@ -1,0 +1,7 @@
+*.pyc
+*.exe
+*.exp
+*.lib
+*.txt
+*.c
+*.mat
