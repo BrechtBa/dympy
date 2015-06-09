@@ -36,16 +36,19 @@ class Dymola:
 		self.run_cmd('cd("'+self.workingdir+'");')
 
 		# clear ds files from the working dir
-		os.remove(self.workingdir+'//dsu.txt') 
-		os.remove(self.workingdir+'//dsin.txt') 
-		os.remove(self.workingdir+'//dsfinal.txt') 
-		os.remove(self.workingdir+'//dslog.txt')
-		os.remove(self.workingdir+'//buildlog.txt')
-		os.remove(self.workingdir+'//dsres.mat') 
-		os.remove(self.workingdir+'//dsmodel.c')
-		os.remove(self.workingdir+'//dymosim.exe')
-		os.remove(self.workingdir+'//dymosim.exp')
-		os.remove(self.workingdir+'//dymosim.lib')
+		try:
+			os.remove(self.workingdir+'//dsu.txt') 
+			os.remove(self.workingdir+'//dsin.txt') 
+			os.remove(self.workingdir+'//dsfinal.txt') 
+			os.remove(self.workingdir+'//dslog.txt')
+			os.remove(self.workingdir+'//buildlog.txt')
+			os.remove(self.workingdir+'//dsres.mat') 
+			os.remove(self.workingdir+'//dsmodel.c')
+			os.remove(self.workingdir+'//dymosim.exe')
+			os.remove(self.workingdir+'//dymosim.exp')
+			os.remove(self.workingdir+'//dymosim.lib')
+		except:
+			pass
 		
 	def openModel(self,filename):	
 		"""
@@ -124,7 +127,10 @@ class Dymola:
 
 		namelist = []
 		for item in name:
-			namelist.append(str(string.rstrip(string.join([x for x in item if len(x) > 0 and ord(x) < 128], ""))))
+			n = str(string.rstrip(string.join([x for x in item if len(x) > 0 and ord(x) < 128], "")))
+			if n =='Time':
+				n = 'time'
+			namelist.append(n)
 
 		name = namelist
 		
