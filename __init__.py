@@ -18,32 +18,43 @@ import string
 
 class Dymola:
 	def __init__(self):
-	
+		"""
+		initializes a new dymola object
+		
+		Example:
+		import dympy
+		dymola = dympy.Dymola()
+		"""
+		
 		self._server = dde.CreateServer()
 		self._server.Create('dym')
 		self._conversation = dde.CreateConversation(self._server)
 		self._conversation.ConnectTo('Dymola','cd("C://")')
 		
-	def run_cmd(self,cmd):
-		"""
-		Runs a Dymola command after initialization
-		"""
-		self._conversation.Exec(cmd)
+		self.res = {}
 		
 	def openModel(self,filename):	
 		"""
 		Opens a .mo file in Dymola
+		
+		Example:
+		dymola.openModel('C:\\Python27\\Lib\\site-packages\\dympy\\test.mo')
 		"""
 		self.run_cmd('openModel("'+ filename +'",true);')
 		
 	def compile(self,modelname):
 		"""
 		Compiles a modelica model
+		
+		Example:
+		dymola.compile('test')
 		"""
 		self.run_cmd('translateModel("'+ modelname +'")')
 
 	def simulate(self,StartTime=0,StopTime=1,OutputInterval=0,NumberOfIntervals=500,Tolerance=1e-4,FixedStepSize=0,Algorithm='dassl'):
 		"""
+		Simulates a compiled model
+		
 		Arguments:
 		StartTime = 0
 		StopTime = 1
@@ -52,13 +63,22 @@ class Dymola:
 		Tolerance = 1e-4
 		FixedStepSize = 0
 		Algorithm = 'dassl'
+		
+		Example:
+		dymola.simulate(StopTime=86400)
 		"""
+		
 		self.run_cmd('experiment(StartTime=%s,StopTime=%s,OutputInterval=%s,NumberOfIntervals=%s,Tolerance=%s,FixedStepSize=%s,Algorithm="%s");'%(StartTime,StopTime,OutputInterval,NumberOfIntervals,Tolerance,FixedStepSize,Algorithm))
 		self.run_cmd('simulate();')
 		
 	def set_parameters(self,pardict):
 		"""
 		sets all values in the parameter dictionary to their value
+		Arguments:
+		pardict: dictionary with name, value pairs
+		
+		Example:
+		dymola.set_parameters({'C1.T':300})
 		"""
 		for key,val in pardict.iteritems():
 			try:
@@ -69,6 +89,9 @@ class Dymola:
 	def get_result(self):
 		"""
 		loads results into a dictionary
+		
+		Example:
+		res = dymola.get_result()
 		"""
 
 		fileName = 'dsres.mat'
@@ -96,6 +119,68 @@ class Dymola:
 			else:
 				res[item] = scipy.sign(dataInfo[idx,1]) * data_2[abs(dataInfo[idx,1])-1]
 		
+		# store and return the results
+		self.res = res
 		return res
+
+	def write_dsu(self,inputdict):
+		"""
+		writes a dsu file which will be used as input
 		
+		Arguments:
+		inputdict: dictionary with name, value pairs, 'time' must be a key
+		
+		Example:
+		dymola.write_dsu({'time':[0,43200,86400],'u':[1000,5000,2000]})
+		"""
+		Aclass = ['Atrajectory          ',
+				  '1.0                  ',
+				  'Generated from Matlab']
+	  
+		names = []
+		data = []
+		# make sure time is the first element
+		for key in inputdict:
+			if key == 'time':
+				names.append(key)
+				data.append(inputdict[key])
+		
+		for key in inputdict:
+			if key != 'time':
+				names.append(key)
+				data.append(inputdict[key])
+		
+		data = zip(*data)
+		
+		scipy.io.savemat('dsu.txt',{'Aclass':Aclass},
+						 appendmat = False, format='4');
+		with open('dsu.txt','ab') as f:
+			scipy.io.savemat(f,{'names':names}, format='4');
+		with open('dsu.txt','ab') as f: 
+			scipy.io.savemat(f,{'data':data}, format='4'); 	
+			
+	def get_res(self,par):
+		"""
+		returns a list with all parameters starting with parameter or the value of the parameter if there is only one
+		"""
+		if par == '':
+			return self.res.keys()
+		else:
+			if par in self.res.keys():
+				return self.res[par]
+			else:
+				names = []
+				for key in self.res.keys():
+					if key.startswith(par):
+						names.append(key)
+						
+				return names
+				
+				
+			
+	def run_cmd(self,cmd):
+		"""
+		Runs a Dymola command after initialization
+		"""
+		self._conversation.Exec(cmd)
 		
