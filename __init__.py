@@ -29,9 +29,23 @@ class Dymola:
 		self._server = dde.CreateServer()
 		self._server.Create('dym')
 		self._conversation = dde.CreateConversation(self._server)
-		self._conversation.ConnectTo('Dymola','cd("C://")')
+		self._conversation.ConnectTo('Dymola','cd("C://");')
 		
 		self.res = {}
+		self.workingdir = 'C://Python27//Lib//site-packages//dympy//dymfiles'
+		self.run_cmd('cd("'+self.workingdir+'");')
+
+		# clear ds files from the working dir
+		os.remove(self.workingdir+'//dsu.txt') 
+		os.remove(self.workingdir+'//dsin.txt') 
+		os.remove(self.workingdir+'//dsfinal.txt') 
+		os.remove(self.workingdir+'//dslog.txt')
+		os.remove(self.workingdir+'//buildlog.txt')
+		os.remove(self.workingdir+'//dsres.mat') 
+		os.remove(self.workingdir+'//dsmodel.c')
+		os.remove(self.workingdir+'//dymosim.exe')
+		os.remove(self.workingdir+'//dymosim.exp')
+		os.remove(self.workingdir+'//dymosim.lib')
 		
 	def openModel(self,filename):	
 		"""
@@ -40,7 +54,10 @@ class Dymola:
 		Example:
 		dymola.openModel('C:\\Python27\\Lib\\site-packages\\dympy\\test.mo')
 		"""
-		self.run_cmd('openModel("'+ filename +'",true);')
+		self.run_cmd('openModel("'+ os.path.abspath(filename) +'",true);')
+		
+		# cd back to the working dir afterwards
+		self.run_cmd('cd("'+self.workingdir+'");')
 		
 	def compile(self,modelname):
 		"""
@@ -94,7 +111,7 @@ class Dymola:
 		res = dymola.get_result()
 		"""
 
-		fileName = 'dsres.mat'
+		fileName = self.workingdir+'//dsres.mat'
 		fullFileName = os.path.abspath(fileName)
 
 		fileData = scipy.io.loadmat(fullFileName, matlab_compatible=True)
@@ -152,11 +169,13 @@ class Dymola:
 		
 		data = zip(*data)
 		
-		scipy.io.savemat('dsu.txt',{'Aclass':Aclass},
+		filename = self.workingdir+'\\dsu.txt'
+		
+		scipy.io.savemat( filename,{'Aclass':Aclass},
 						 appendmat = False, format='4');
-		with open('dsu.txt','ab') as f:
+		with open(filename,'ab') as f:
 			scipy.io.savemat(f,{'names':names}, format='4');
-		with open('dsu.txt','ab') as f: 
+		with open(filename,'ab') as f: 
 			scipy.io.savemat(f,{'data':data}, format='4'); 	
 			
 	def get_res(self,par):
@@ -176,8 +195,13 @@ class Dymola:
 						
 				return names
 				
-				
-			
+	def dsfinal2dsin(self):
+		"""
+		import dsfinal.txt as initial condition
+		"""
+		self.run_cmd('importInitial("dsfinal.txt");')
+		
+		
 	def run_cmd(self,cmd):
 		"""
 		Runs a Dymola command after initialization
