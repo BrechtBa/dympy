@@ -100,11 +100,15 @@ class Dymola:
 		Example:
 		dymola.set_parameters({'C1.T':300})
 		"""
+		
+		# write to dympy.mos
+		f = open( self.workingdir+'//dympy.mos', 'w')
 		for key,val in pardict.iteritems():
-			try:
-				self.run_cmd( '%s=%s'%(key,val) )
-			except:
-				print( 'could not assign %s to %s'%(key,val) )
+			f.write( '%s=%s\n'%(key,val) )
+
+		f.close()
+		self.run_cmd( 'RunScript("dympy.mos")' )
+
 				
 	def get_result(self):
 		"""
