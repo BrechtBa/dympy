@@ -131,7 +131,9 @@ class Dymola:
 
 		namelist = []
 		for item in name:
-			n = str(string.rstrip(string.join([x for x in item if len(x) > 0 and ord(x) < 128], "")))
+			#n = str(string.rstrip(string.join([x for x in item if len(x) > 0 and ord(x) < 128], "")))
+			n = string.rstrip(string.join(item,''))
+
 			if n =='Time':
 				n = 'time'
 			namelist.append(n)
@@ -142,7 +144,7 @@ class Dymola:
 		for idx,item in enumerate(name):
 			if dataInfo[idx,0] == 1:
 				# create a linspace  vector with the same length as data
-				res[item] = scipy.sign(dataInfo[idx,1]) * scipy.linspace(data_1[abs(dataInfo[idx,1])-1][0], data_1[abs(dataInfo[idx,1])-1][1], len(data_2[0]) ) 
+				res[item] = scipy.sign(dataInfo[idx,1]) * scipy.linspace(data_1[abs(dataInfo[idx,1])-1][0], data_1[abs(dataInfo[idx,1])-1][1], len(data_2[0]) )
 			else:
 				res[item] = scipy.sign(dataInfo[idx,1]) * data_2[abs(dataInfo[idx,1])-1]
 		
