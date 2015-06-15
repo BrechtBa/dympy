@@ -62,6 +62,12 @@ class Dymola:
 		# cd back to the working dir afterwards
 		self.run_cmd('cd("'+self.workingdir+'");')
 		
+	def clear(self):
+		"""
+		Closes all models opened in Dymola
+		"""
+		self.run_cmd('clear;')
+	
 	def compile(self,modelname):
 		"""
 		Compiles a modelica model
@@ -70,7 +76,7 @@ class Dymola:
 		dymola.compile('test')
 		"""
 		self.run_cmd('translateModel("'+ modelname +'")')
-
+	
 	def simulate(self,StartTime=0,StopTime=1,OutputInterval=0,NumberOfIntervals=500,Tolerance=1e-4,FixedStepSize=0,Algorithm='dassl'):
 		"""
 		Simulates a compiled model
