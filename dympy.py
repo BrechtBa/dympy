@@ -66,7 +66,7 @@ class Dymola:
 		"""
 		Closes all models opened in Dymola
 		"""
-		self.run_cmd('clear;')
+		self.run_cmd('clear()')
 	
 	def compile(self,modelname):
 		"""
