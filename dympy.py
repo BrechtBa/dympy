@@ -189,12 +189,11 @@ class Dymola:
 		
 		filename = self.workingdir+'\\dsu.txt'
 		
-		scipy.io.savemat( filename,{'Aclass':Aclass},
-						 appendmat = False, format='4');
-		with open(filename,'ab') as f:
-			scipy.io.savemat(f,{'names':names}, format='4');
-		with open(filename,'ab') as f: 
-			scipy.io.savemat(f,{'data':data}, format='4'); 	
+		scipy.io.savemat( filename, {'Aclass': Aclass}, appendmat=False, format='4')
+		with open(filename, 'ab') as f:
+			scipy.io.savemat(f, {'names': names}, format='4')
+		with open(filename, 'ab') as f: 
+			scipy.io.savemat(f, {'data': data}, format='4')	
 			
 	def get_res(self,par):
 		"""
