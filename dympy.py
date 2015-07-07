@@ -149,8 +149,11 @@ class Dymola:
 		res = {}
 		for idx,item in enumerate(name):
 			if dataInfo[idx,0] == 1:
-				# create a linspace  vector with the same length as data
-				res[item] = scipy.sign(dataInfo[idx,1]) * scipy.linspace(data_1[abs(dataInfo[idx,1])-1][0], data_1[abs(dataInfo[idx,1])-1][1], len(data_2[0]) )
+				#add the single value of a parameter
+				res[item] = scipy.sign(dataInfo[idx,1])*data_1[abs(dataInfo[idx,1])-1][0]
+			
+				# create a linspace vector with the same length as data
+				#res[item] = scipy.sign(dataInfo[idx,1]) * scipy.linspace(data_1[abs(dataInfo[idx,1])-1][0], data_1[abs(dataInfo[idx,1])-1][1], len(data_2[0]) )
 			else:
 				res[item] = scipy.sign(dataInfo[idx,1]) * data_2[abs(dataInfo[idx,1])-1]
 		
