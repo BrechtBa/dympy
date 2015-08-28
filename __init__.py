@@ -1,1 +1,1 @@
-from dympy.dympy import *
+from dympy import *
