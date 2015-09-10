@@ -1,6 +1,6 @@
 # dympy
 A tool to run Dymola commands from python
-
+Check the below example for a quickstart or the docstrings for a more complete guide.
 
 ## Example
 
