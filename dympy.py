@@ -1,4 +1,20 @@
-﻿
+﻿######################################################################################
+#    Copyright 2015 Brecht Baeten
+#    This file is part of dympy.
+#
+#    dympy is free software: you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation, either version 3 of the License, or
+#    (at your option) any later version.
+#
+#    dympy is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with dympy.  If not, see <http://www.gnu.org/licenses/>.
+######################################################################################
 
 # if an error like this arises:
 # Traceback (most recent call last):
@@ -69,14 +85,34 @@ class Dymola:
 		"""
 		self.run_cmd('clear()')
 	
-	def compile(self,modelname):
+	def compile(self,modelname,parameters=None):
 		"""
 		Compiles a modelica model
 		
 		Example:
 		dymola.compile('test')
 		"""
-		self.run_cmd('translateModel("'+ modelname +'")')
+		if parameters == None:
+			arguments = ''
+		else:
+			argumentslist = []
+			for key,val in parameters.iteritems():
+				if isinstance(val,np.ndarray):
+					if len(val.shape)==1:
+						vallist = []
+						for v in val:
+							vallist.append(str(v))
+						argumentslist.append('{}=vector([{}])'.format(key,','.join(vallist)))
+					else:
+						print('Warning: multi dimensional array assignment is not yet supported')
+				else:
+					argumentslist.append('{}={}'.format(key,val))
+				
+			arguments = ','.join(argumentslist)
+				
+		problem = '"{modelname}({arguments})"'.format(modelname=modelname,arguments=arguments)
+
+		self.run_cmd('translateModel(problem={problem})'.format(problem=problem))
 	
 	def simulate(self,StartTime=0,StopTime=1,OutputInterval=0,NumberOfIntervals=500,Tolerance=1e-4,FixedStepSize=0,Algorithm='dassl'):
 		"""
@@ -94,6 +130,7 @@ class Dymola:
 		Example:
 		dymola.simulate(StopTime=86400)
 		"""
+		
 		
 		self.run_cmd('experiment(StartTime=%s,StopTime=%s,OutputInterval=%s,NumberOfIntervals=%s,Tolerance=%s,FixedStepSize=%s,Algorithm="%s");'%(StartTime,StopTime,OutputInterval,NumberOfIntervals,Tolerance,FixedStepSize,Algorithm))
 		self.run_cmd('simulate();')
