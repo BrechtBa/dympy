@@ -29,6 +29,7 @@
 import win32ui
 import dde
 import os
+import inspect
 import scipy.io
 import string
 import numpy as np
@@ -49,7 +50,8 @@ class Dymola:
 		self._conversation.ConnectTo('Dymola','cd("C://");')
 		
 		self.res = {}
-		self.workingdir = 'C://Python27//Lib//site-packages//dympy//dymfiles'
+		
+		self.workingdir = os.path.join( os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe()))) , 'dymfiles' )
 		self.run_cmd('cd("'+self.workingdir+'");')
 
 		# clear ds files from the working dir

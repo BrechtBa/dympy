@@ -1,0 +1,5 @@
+include README.md
+include LICENSE
+include examples/example.mo
+include examples/example.ipynb
+include dympy/dymfiles/dymola_executables_and_results_will_be_written_here

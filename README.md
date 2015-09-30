@@ -2,6 +2,18 @@
 A tool to run Dymola commands from python
 Check the below example for a quickstart or the docstrings for a more complete guide.
 
+## Installation
+requires:
+* `numpy`
+* `scipy`
+* `win32ui`
+* `dde`
+
+To install download the latest [release](https://github.com/BrechtBa/dympy/releases), unpack, cd to the unpacked folder and run:
+```
+python setup.py install
+```
+
 ## Example
 
 First initialize the Dymola connection. It is good practice to clear all open models from Dymola after initialization to avoid redefinition conflicts, however this is not necessary.

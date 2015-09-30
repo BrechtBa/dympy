@@ -1,1 +1,4 @@
 *.pyc
+dympy.egg-info
+dist
+build
