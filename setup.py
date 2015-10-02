@@ -1,4 +1,4 @@
-from setuptools import setup,find_packages
+from setuptools import setup
 
 setup(
     name='dympy',
@@ -8,6 +8,7 @@ setup(
 	url='https://github.com/BrechtBa/dympy',
 	author='Brecht Baeten',
 	author_email='brecht.baeten@gmail.com',
-	packages=find_packages(),
+	packages=['dympy'],
 	install_requires=['numpy','scipy'],
+	classifiers = ['Programming Language :: Python :: 2.7'],
 )

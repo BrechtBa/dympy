@@ -6,8 +6,7 @@ Check the below example for a quickstart or the docstrings for a more complete g
 requires:
 * `numpy`
 * `scipy`
-* `win32ui`
-* `dde`
+* `pywin32` [available here](http://sourceforge.net/projects/pywin32/files/pywin32/)
 
 To install download the latest [release](https://github.com/BrechtBa/dympy/releases), unpack, cd to the unpacked folder and run:
 ```

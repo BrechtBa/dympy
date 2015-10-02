@@ -22,7 +22,7 @@
 #   import dde
 # ImportError: This must be an MFC application - try 'import win32ui' first
 # 
-# 1.Delete pythonwin and pywin32_system32 folderes entirely (presumably under C:\Python27\Lib\site-packages)
+# 1.Delete pythonwin and pywin32_system32 folders entirely (presumably under C:\Python27\Lib\site-packages)
 # 2.Check your pywin32 version; it should be 214 (not 218) for those using v2.7
 # 3.Download pywin32-214.win32-py2.7 from appropriate resources (one is this: http://sourceforge.net/projects/pywin32/files/pywin32/Build%20214/ )
 
