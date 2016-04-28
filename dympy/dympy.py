@@ -29,6 +29,7 @@
 
 import win32ui
 import dde
+import subprocess
 import os
 import inspect
 import scipy.io
@@ -39,16 +40,29 @@ class Dymola:
 	def __init__(self):
 		"""
 		initializes a new dymola object
-		
-		Example:
-		import dympy
-		dymola = dympy.Dymola()
+
+		Example::
+			import dympy
+			dymola = dympy.Dymola()
 		"""
 		
 		self._server = dde.CreateServer()
 		self._server.Create('dym')
 		self._conversation = dde.CreateConversation(self._server)
-		self._conversation.ConnectTo('Dymola','cd("C://");')
+			
+		# try to connect to dymola	
+		try:
+			self._conversation.ConnectTo('Dymola','cd("C://");')
+		except:
+			# dymola is probably not opened so try to open it first end wait some time before retrying
+			subprocess.Popen(['dymola'])
+			time.sleep(10)
+			
+			try:
+				self._conversation.ConnectTo('Dymola','cd("C://");')
+			except:
+				raise Exception('Dymola could not be found')
+		
 		
 		self.res = {}
 		
@@ -74,8 +88,8 @@ class Dymola:
 		"""
 		Opens a .mo file in Dymola
 		
-		Example:
-		dymola.openModel('C:\\Python27\\Lib\\site-packages\\dympy\\test.mo')
+		Example::
+			dymola.openModel('C:\\Python27\\Lib\\site-packages\\dympy\\test.mo')
 		"""
 		self.run_cmd('openModel("'+ os.path.abspath(filename) +'",true);')
 		
@@ -92,8 +106,8 @@ class Dymola:
 		"""
 		Compiles a modelica model
 		
-		Example:
-		dymola.compile('test')
+		Example::
+			dymola.compile('test')
 		"""
 		if parameters == None:
 			arguments = ''
@@ -122,18 +136,17 @@ class Dymola:
 		Simulates a compiled model
 		
 		Arguments:
-		StartTime = 0
-		StopTime = 1
-		OutputInterval = 0
-		NumberOfIntervals = 500
-		Tolerance = 1e-4
-		FixedStepSize = 0
-		Algorithm = 'dassl'
+		StartTime = 0				number, simulation start time in seconds
+		StopTime = 1				number, simulation stop time in seconds
+		OutputInterval = 0			number, interval between the output data in seconds
+		NumberOfIntervals = 500		int, number of intervals in the output data, if both OutputInterval and NumberOfIntervals are > 0 ???
+		Tolerance = 1e-4			number, integration tolerance
+		FixedStepSize = 0			number, interval between simulation points used with fixed timestep methods
+		Algorithm = 'dassl'			string, integration algorithm ('dassl','lsodar','euler',...)
 		
-		Example:
-		dymola.simulate(StopTime=86400)
+		Example::
+			dymola.simulate(StopTime=86400)
 		"""
-		
 		
 		self.run_cmd('experiment(StartTime=%s,StopTime=%s,OutputInterval=%s,NumberOfIntervals=%s,Tolerance=%s,FixedStepSize=%s,Algorithm="%s");'%(StartTime,StopTime,OutputInterval,NumberOfIntervals,Tolerance,FixedStepSize,Algorithm))
 		self.run_cmd('simulate();')
@@ -142,10 +155,10 @@ class Dymola:
 		"""
 		sets all values in the parameter dictionary to their value
 		Arguments:
-		pardict: dictionary with name, value pairs
+		pardict: 	dict, 	name - value pairs for parameters
 		
-		Example:
-		dymola.set_parameters({'C1.T':300})
+		Example::
+			dymola.set_parameters({'C1.T':300})
 		"""
 		
 		# write to dympy.mos
@@ -161,8 +174,8 @@ class Dymola:
 		"""
 		loads results into a dictionary
 		
-		Example:
-		res = dymola.get_result()
+		Example::
+			res = dymola.get_result()
 		"""
 
 		fileName = self.workingdir+'//dsres.mat'
@@ -179,7 +192,7 @@ class Dymola:
 		namelist = []
 		for item in name:
 			#n = str(string.rstrip(string.join([x for x in item if len(x) > 0 and ord(x) < 128], "")))
-			n = string.rstrip(string.join(item,''))
+			n = string.rstrip(''.join(item))
 
 			if n =='Time':
 				n = 'time'
@@ -207,10 +220,10 @@ class Dymola:
 		writes a dsu file which will be used as input
 		
 		Arguments:
-		inputdict: dictionary with name, value pairs, 'time' must be a key
+		inputdict: 		dict, with name - value pairs, 'time' must be a key
 		
-		Example:
-		dymola.write_dsu({'time':[0,43200,86400],'u':[1000,5000,2000]})
+		Example::
+			dymola.write_dsu({'time':[0,43200,86400],'u':[1000,5000,2000]})
 		"""
 		Aclass = ['Atrajectory          ',
 				  '1.0                  ',
@@ -265,7 +278,7 @@ class Dymola:
 		
 	def run_cmd(self,cmd):
 		"""
-		Runs a Dymola command after initialization
+		Runs a Dymola command
 		"""
 		self._conversation.Exec(cmd)
 		
