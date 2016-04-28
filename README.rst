@@ -7,6 +7,7 @@ Check the below example for a quickstart or the docstrings for a more complete g
 Installation
 ------------
 requires:
+
 - ``numpy``
 - ``scipy``
 - ``pywin32`` `available here <http://sourceforge.net/projects/pywin32/files/pywin32/>`_.
