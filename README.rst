@@ -1,8 +1,12 @@
 dympy
 =====
 
-A tool to run Dymola commands from python
-Check the below example for a quickstart or the docstrings for a more complete guide.
+A tool to communicate with Dymola from python on Windows
+dympy communicates with dymola through DDE (Dynamic Data Exchange).
+After a connection with an open Dymola window is established, commands can be sent as if they were typed in the Dymola command line.
+Several usefull commands (opening models, setting model parameters, compiling, writing a dsin.txt file, simulating, and loading results,...) have been predefined for ease of use.
+
+Check the example below for a quickstart or the docstrings for a more complete guide.
 
 Installation
 ------------
