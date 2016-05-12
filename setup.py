@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
     name='dympy',
-    version='0.0.1',
+    version='0.0.2',
     license='GNU GENERAL PUBLIC LICENSE',
 	description='A package to run Dymola commands from python in windows',
 	url='https://github.com/BrechtBa/dympy',
