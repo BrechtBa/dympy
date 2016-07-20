@@ -287,5 +287,8 @@ class Dymola:
         """
         Runs a Dymola command
         """
-        self._conversation.Exec(cmd)
+        try:
+            self._conversation.Exec(cmd)
+        except Exception as e:
+            print(e)
         
