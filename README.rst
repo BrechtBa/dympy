@@ -14,11 +14,11 @@ requires:
 
 - ``numpy``
 - ``scipy``
-- ``pywin32`` `available here <http://sourceforge.net/projects/pywin32/files/pywin32/>`_.
+- ``pywin32-214`` available on `sourceforge <https://sourceforge.net/projects/pywin32/files/pywin32/Build%20214/>`_.
 
-To install download the latest `release <https://github.com/BrechtBa/dympy/releases>`_., unpack, cd to the unpacked folder and run::
+To install, first install ``pywin32-214`` for your system then run::
 
-	python setup.py install
+	pip install dympy
 
 
 Example
