@@ -1,6 +1,9 @@
 dympy
 =====
 
+:Release:  |version|
+:Date:  |today|
+
 A tool to communicate with Dymola from python on Windows
 dympy communicates with dymola through DDE (Dynamic Data Exchange).
 After a connection with an open Dymola window is established, commands can be sent as if they were typed in the Dymola command line.
