@@ -125,7 +125,7 @@ def savemat(filename,data,order=None):
     # make sure time is the first element
     names,values = dict2list(data,order)
 
-    values = zip(*data)
+    values = zip(*values)
     
     scipy.io.savemat( filename, {'Aclass': Aclass}, appendmat=False, format='4')
     with open(filename, 'ab') as f:
