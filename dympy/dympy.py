@@ -19,14 +19,15 @@ try:
     import win32ui
     import dde
 except Exception as e:
-    print('If an error like this arises:')
-    print('Traceback (most recent call last):\n File "C:\IQTrader\_script\_obj\DDEClient.py", line 12, in <module>\n   import dde\nImportError: This must be an MFC application - try \'import win32ui\' first')
+    print('The pywin32 version installed on the system is probably incompattible with dde used for communication between python2.7 and Dymola on windows')
     print('')
-    print('1. Delete pythonwin and pywin32_system32 folders entirely (presumably under C:\Python27\Lib\site-packages):')
-    print('2. Check your pywin32 version; it should be 214 (not 218) for those using v2.7')
-    print('3. Download pywin32-214.win32-py2.7 from appropriate resources (one is this: http://sourceforge.net/projects/pywin32/files/pywin32/Build%20214/ )')
+    print('To resolve this error:')
+    print('1. Check your pywin32 version; it should be 214 (not 218) for those using v2.7')
+    print('2. Delete pythonwin and pywin32_system32 folders entirely (presumably under C:\Python27\Lib\site-packages):')
+    print('3. Download pywin32-214.win32-py2.7 from appropriate resources (one is: http://sourceforge.net/projects/pywin32/files/pywin32/Build%20214/ )')
+    print('')
     
-    raise e
+    raise Exception('Failed to import dde')
    
 import subprocess
 import os
