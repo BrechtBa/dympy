@@ -66,6 +66,48 @@ def get_value_array(res,key):
     
     return val
     
+    
+def get_result_subset(res,keys):
+    """
+    returns a subset of a result dictionary
+    
+    Parameters
+    ----------
+    res : dict
+        a dictionary with string keys
+        
+    keys : list
+        a list of keys
+        a key can be fully specified or contain a * to signify the key start
+        with the supplied value
+        
+    Returns
+    -------
+    newres : dict
+        a new dictionary
+        
+    """
+    
+    newres = {}
+    for k in keys:
+
+        if k[-1] == '*':
+            found = False
+            for kk in res:
+                if kk.startswith(k[:-1]):
+                    found = True
+                    newres[kk] = res[kk]
+            if not found:
+                print('Warning: no matches found, {}'.format(k))
+                
+        else:
+            try:
+                newres[k] = res[k]
+            except:
+                print('Warning: key not found, {}'.format(k))
+                
+    return newres
+            
 def get_children(res,key):
     """
     Returns a list with all keys in res starting with key
