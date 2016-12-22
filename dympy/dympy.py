@@ -70,7 +70,7 @@ class DymoBase(object):
         # create a copy of the original dsin.txt file if the copy does not exist
         if os.path.exists( os.path.join(self.workingdir ,'dsin.txt') ) and not os.path.exists( os.path.join(self.workingdir ,'dsin_original.txt') ):
             copyfile(os.path.join(self.workingdir ,'dsin.txt'),os.path.join(self.workingdir ,'dsin_original.txt'))
-            
+        
     
     def get_result(self):
         """
@@ -432,8 +432,44 @@ class Dymosim(DymoBase):
     
         super(Dymosim,self).__init__(workingdir=workingdir)
   
+        # check if there is a dymosim.exe file in the directory
+        if not os.path.exists( os.path.join(self.workingdir ,'dymosim.exe') ):
+            raise Exception('No dymosim.exe found in workingdir: {}'.format(self.workingdir))
+            
             
     def simulate(self,StartTime=0,StopTime=1,OutputInterval=0,NumberOfIntervals=500,Tolerance=1e-4,FixedStepSize=0,Algorithm='dassl'):
+        """
+        Simulates a compiled model
+        
+        Parameters
+        ----------
+        StartTime : number
+            simulation start time in seconds
+            
+        StopTime : number
+            simulation stop time in seconds
+            
+        OutputInterval : number
+            interval between the output data in seconds
+            
+        NumberOfIntervals : int
+            number of intervals in the output data, if both OutputInterval and 
+            NumberOfIntervals are > 0 ???
+            
+        Tolerance : number
+            integration tolerance
+            
+        FixedStepSize : number
+            interval between simulation points used with fixed timestep methods
+            
+        Algorithm : string
+            integration algorithm ['dassl','lsodar','euler',...]
+        
+        Examples
+        --------
+        >>> dymola.simulate(StopTime=86400)
+        
+        """
         
         algorithms = {
             'deabm':   1,
@@ -456,23 +492,23 @@ class Dymosim(DymoBase):
         oldpath = os.path.join(self.workingdir ,'dsin.txt')
         newpath = os.path.join(self.workingdir ,'newdsin.txt')
         with open(oldpath) as oldfile:
-            with open(newpath) as newfile:
+            with open(newpath,'w') as newfile:
 
                 for line in oldfile:
                     if '# StartTime    Time at which integration starts' in line:
-                        line = ' {} # StartTime    Time at which integration starts'.format(StartTime)
+                        line = ' {} # StartTime    Time at which integration starts\n'.format(StartTime)
                     elif '# StopTime     Time at which integration stops' in line:
-                        line = ' {} # StopTime     Time at which integration stops'.format(StopTime)
+                        line = ' {} # StopTime     Time at which integration stops\n'.format(StopTime)
                     elif '# Increment    Communication step size, if > 0' in line:
-                        line = ' {} # Increment    Communication step size, if > 0'.format(OutputInterval)
-                    elif '# nInterval    Number of communication intervals, if > 0' in line:
-                        line = ' {} # nInterval    Number of communication intervals, if > 0'.format(NumberOfIntervals)
+                        line = ' {} # Increment    Communication step size, if > 0\n'.format(OutputInterval)
+                    elif '# nInterval    Number of communication intervals, if > 0\n' in line:
+                        line = ' {} # nInterval    Number of communication intervals, if > 0\n'.format(NumberOfIntervals)
                     elif '# Tolerance    Relative precision of signals for' in line:
-                        line = ' {} # Tolerance    Relative precision of signals for'.format(Tolerance)
+                        line = ' {} # Tolerance    Relative precision of signals for\n'.format(Tolerance)
                     elif '# MaxFixedStep Maximum step size of fixed step size' in line:
-                        line = ' {} # MaxFixedStep Maximum step size of fixed step size'.format(FixedStepSize)
+                        line = ' {} # MaxFixedStep Maximum step size of fixed step size\n'.format(FixedStepSize)
                     elif '# Algorithm    Integration algorithm as integer (1...28)' in line:
-                        line = ' {} # Algorithm    Integration algorithm as integer (1...28)'.format(algorithms[Algorithm])
+                        line = ' {} # Algorithm    Integration algorithm as integer (1...28)\n'.format(algorithms[Algorithm])
                     
                     
                     newfile.write(line)
@@ -483,7 +519,9 @@ class Dymosim(DymoBase):
         
         
         # run the process
-        subprocess.call([os.path.join(self.workingdir ,'dymosim.exe')])
+        print(self.workingdir)
+        abspath = os.path.abspath(self.workingdir)
+        subprocess.call([os.path.join(abspath,'dymosim.exe')],cwd=abspath)
     
     
     def set_parameters(self,pardict):
